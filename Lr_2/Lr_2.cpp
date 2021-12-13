@@ -22,13 +22,13 @@ T GetCorrectNumber1(T min, T max)
 template <typename T>
 T GetCorrectNumber2(T min)
 {
-    T x;
-    while ((cin >> x).fail() || x < min)
+    while (!(cin >> x) && x < min)
     {
         cin.clear();
         cin.ignore(10000, '\n');
-        cout << "Type number (0...): ";
+        cout << "Type correct number: ";
     }
+    cin.ignore(10000, '\n');
     return x;
 }
 
@@ -47,9 +47,9 @@ Pipe input_pipe(int id)
     cout << "Enter information about the pipe, please" << endl;
     pipe.id = id;
     cout << "Enter the length: ";
-    pipe.length = GetCorrectNumber2(0);
+    pipe.length = GetCorrectNumber2(0.);
     cout << "Enter the diameter: ";
-    pipe.diameter = GetCorrectNumber2(0);
+    pipe.diameter = GetCorrectNumber2(0.);
     cout << "Enter 1 if the pipe is in process or 0 if the pipe is not in process" << endl;
     do {
         variant = _getch();

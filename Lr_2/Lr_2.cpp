@@ -22,6 +22,7 @@ T GetCorrectNumber1(T min, T max)
 template <typename T>
 T GetCorrectNumber2(T min)
 {
+    T x;
     while (!(cin >> x) && x < min)
     {
         cin.clear();
@@ -190,9 +191,10 @@ void save_pipe(const Pipe& pipe, ofstream& fout)
     if (fout.is_open()) {
         fout << pipe.id << endl
             << pipe.length << endl
-            << pipe.diameter << endl;
-        if (pipe.in_process == true) fout << "Processed";
-        else fout << "Not processed";
+            << pipe.diameter << endl
+            << pipe.in_process << endl;
+        // if (pipe.in_process == true) fout << "Processed";
+       //  else fout << "Not processed";
     }
 }
 
@@ -207,6 +209,16 @@ void save_station(const Station& station, ofstream& fout)
             << station.eff << endl;
 
     }
+}
+
+void save_pipes(const vector<Pipe>& pipes, ofstream& fout)
+{
+    for (auto& p : pipes) save_pipe(p, fout);
+}
+
+void save_stations(const vector<Station>& stations, ofstream& fout)
+{
+    for (auto& s : stations) save_station(s, fout);
 }
 
 Pipe& SelectPipe(vector<Pipe>& p)
@@ -272,29 +284,7 @@ int main()
         }
 
         case 5:
-        { /* if (station.id != 0)
-                print_station(station);
-        else
-                cout << "No station" << endl;
-            if (pipe.id != 0)
-               print_pipe(pipe);
-            else
-                cout << "No pipe" << endl;*/
-                /*for (auto& pipe : pipes)
-                print_pipe;
-            break;*/
-            /*int variant;
-            cout << "Enter 1 if you want to show pipes, 0 if you want to show stations  " << endl;
-            do {
-                variant = _getch();
-                if (variant != '0' && variant != '1') cout << "Enter the correct value" << endl;
-            } while (variant != '0' && variant != '1');
-            if (variant == '1') {
-                print_pipe(SelectPipe(pipes));
-            }
-            else
-            print_station(SelectStation(stations));
-            break;*/
+        { 
             cout << "Information about pipes:" << endl;
             if (pipes.size() == 0) {
                 cout << "No pipes" << endl;
@@ -311,20 +301,20 @@ int main()
             break;
         }
         case 6:
-        {   /*ofstream fout;
+        {   ofstream fout;
             fout.open("data.txt", ios::out);
-            if (stationcount != 1)
-                fout << stationcount - 1 << endl;
+            if (pipes.size() != 0)
+                fout << pipes.size() << endl;
             else fout << 0 << endl;
-            if (pipecount != 1)
-                fout << pipecount - 1 << endl;
+            if (stations.size() != 0)
+                fout << stations.size() << endl;
             else fout << 0 << endl;
-             if (stationcount != 1)
-                save_station(station, fout);
-            if (pipecount != 1)
-                save_pipe(pipe, fout);
-            fout.close();*/
-            break;
+            if (stations.size() != 0)
+                save_stations(stations, fout);
+            if (pipes.size() != 0)
+                save_pipes(pipes, fout);
+            fout.close();
+        break;
         }
         case 7:
         {

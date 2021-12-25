@@ -353,7 +353,12 @@ int main()
             name += ".txt";
             ifstream fin;
             fin.open(name, ios::in);
-            load_all(pipes, stations, fin);
+            if (fin.fail()) 
+                cout << "File is not exist" << endl; 
+            else {
+                cout << "File is exist" << endl;
+                load_all(pipes, stations, fin);
+            }
             break;
         }
         case 0:

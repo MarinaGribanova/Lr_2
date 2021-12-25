@@ -61,35 +61,6 @@ Pipe input_pipe(int id)
     return pipe;
 }
 
-Pipe load_pipe(ifstream& fin)
-{
-    if (fin.is_open()) {
-        Pipe pipe;
-        string s;
-        fin >> pipe.id;
-        fin >> pipe.length;
-        fin >> pipe.diameter;
-        fin >> s;
-        s == "Processed" ? pipe.in_process = true : pipe.in_process = false;
-        return pipe;
-    }
-    return {};
-}
-
-Station load_station(ifstream& fin)
-{
-    if (fin.is_open()) {
-        Station station;
-        fin >> station.id;
-        fin >> station.name;
-        fin >> station.num;
-        fin >> station.num_process;
-        fin >> station.eff;
-        return station;
-    }
-    return {};
-}
-
 Station input_station(int id)
 {
     Station station;
@@ -106,6 +77,39 @@ Station input_station(int id)
     station.eff = GetCorrectNumber1(0, 100);
     return station;
 }
+
+void load_all(vector <Pipe>& pipes, vector <Station>& stations)
+{
+    int pipecount, stationcount;
+    ifstream fin;
+    string str;
+    fin.open("data.txt");
+    getline(fin, str);
+    pipecount = stoi(str);
+    getline(fin, str);
+    stationcount = stoi(str);
+
+    if (pipecount != 0) {
+        pipes.resize(pipecount);
+        for (int i = 0; i < pipes.size(); ++i) {
+            getline(fin, str); pipes[i].id = stoi(str);
+            getline(fin, str); pipes[i].length = stod(str);
+            getline(fin, str); pipes[i].diameter = stoi(str);
+            getline(fin, str); pipes[i].in_process = stoi(str);
+        }
+    }
+    if (stationcount != 0) {
+        stations.resize(stationcount);
+        for (int i = 0; i < stations.size(); ++i) {
+            getline(fin, str); stations[i].id = stoi(str);
+            getline(fin, str); stations[i].name = str;
+            getline(fin, str); stations[i].num = stoi(str);
+            getline(fin, str); stations[i].num_process = stoi(str);
+            getline(fin, str); stations[i].eff = stoi(str);
+        }
+    }
+}
+
 
 void print_pipe(const Pipe& pipe)
 {
@@ -309,10 +313,10 @@ int main()
             if (stations.size() != 0)
                 fout << stations.size() << endl;
             else fout << 0 << endl;
-            if (stations.size() != 0)
-                save_stations(stations, fout);
             if (pipes.size() != 0)
                 save_pipes(pipes, fout);
+            if (stations.size() != 0)
+                save_stations(stations, fout);
             fout.close();
         break;
         }
@@ -338,6 +342,7 @@ int main()
                 print_pipe(pipe);
             }
             fin.close();*/
+            load_all(pipes, stations);
             break;
         }
         case 0:

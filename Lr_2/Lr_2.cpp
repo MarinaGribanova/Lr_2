@@ -32,6 +32,16 @@ T GetCorrectNumber2(T min)
     cin.ignore(10000, '\n');
     return x;
 }
+template <typename T>
+int SearchId(const T& vector, int id)
+{
+    int i = 0;
+    for (auto& p : vector) {
+        if (p.id == id) return i;
+        ++i;
+    }
+    return -1;
+}
 
 void pipe_process(const Pipe& pipe)
 {
@@ -150,18 +160,13 @@ void print_menu()
         << "5. Show " << endl
         << "6. Save" << endl
         << "7. Load " << endl
+        << "8. Delete pipe " << endl
+        << "9. Delete station " << endl
         << "0. Exit" << endl;
 }
 
 void edit_pipe(Pipe& pipe)
 {
-    /*char variant;
-        /*cout << "Enter 1 if pipe is in process or 0 if pipe is not in process" << endl;
-        do {
-            variant = _getch();
-            if (variant != '0' && variant != '1') cout << "Enter the correct value 1 or 0" << endl;
-        } while (variant != '0' && variant != '1');
-        pipe.in_process = variant == '1';*/
     pipe.in_process = !pipe.in_process;
     pipe_process(pipe);
 }
@@ -184,6 +189,31 @@ void edit_station(Station& station)
         cout << "Enter how many factories were excluded from work " << endl;
         n = GetCorrectNumber1(0, (station.num_process));
         station.num_process = station.num_process - n;
+    }
+}
+
+template <typename T>
+void del_object(T& vector, int i)
+{
+    if (i < vector.size()) {
+        vector.erase(vector.begin() + i);
+    }
+}
+
+template <typename T>
+void del(T& vector)
+{
+
+    while (true) {
+        cout << endl << "Type id: ";
+        int id = GetCorrectNumber2(0);
+        int i = SearchId(vector, id);
+        if (i < vector.size() && i != -1) {
+            del_object(vector, i);
+            cout << "Object was deleted" << endl;
+            return;
+        }
+        else cout << "Object with this id was not found" << endl;
     }
 }
 
@@ -248,7 +278,7 @@ int main()
     while (1)
     {
         print_menu();
-        switch (GetCorrectNumber1(0, 7))
+        switch (GetCorrectNumber1(0, 9))
         {
         case 1:
         {   Pipe pipe;
@@ -326,26 +356,6 @@ int main()
         }
         case 7:
         {
-            /*ifstream fin;
-            fin.open("data.txt", ios::in);
-            fin >> stationcount;
-            fin >> pipecount;
-            if (stationcount == 0) {
-                cout << "No station" << endl;
-            }
-            else
-            {
-                station = load_station(fin);
-                print_station(station);
-            }
-            if (pipecount == 0) {
-                cout << "No pipe" << endl;
-            }
-            else {
-                pipe = load_pipe(fin);
-                print_pipe(pipe);
-            }
-            fin.close();*/
             string name = "";
             cout << "Name of file : ";
             cin.ignore(10000, '\n');
@@ -358,6 +368,26 @@ int main()
             else {
                 cout << "File is exist" << endl;
                 load_all(pipes, stations, fin);
+            }
+            break;
+        }
+        case 8:
+        {
+            if (pipes.size() == 0)
+                cout << "Pipes to delete not found" << endl;
+            else {
+                print_pipes(pipes);
+                del(pipes);
+            }
+            break;
+        }
+        case 9:
+        {
+            if (stations.size() == 0)
+                cout << "Stations to delete not found" << endl;
+            else {
+                print_stations(stations);
+                del(stations);
             }
             break;
         }

@@ -4,6 +4,8 @@
 #include <fstream>
 #include <vector>
 #include <unordered_map>
+#include "pipe.h"
+#include "station.h"
 
 using namespace std;
 template <typename T>

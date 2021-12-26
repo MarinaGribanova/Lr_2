@@ -6,89 +6,47 @@
 #include <unordered_map>
 #include "pipe.h"
 #include "station.h"
-#include "CorrectNumber.h"
 
 using namespace std;
 
 template <typename T>
+T GetCorrectNumber1(T min, T max)
+{
+    T x;
+    while ((cin >> x).fail() || x < min || x > max)
+    {
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cout << "Type number (" << min << "-" << max << "):";
+    }
+    return x;
+}
+template <typename T>
 int SearchId(const T& map, int id)
 {
-        if (map.find(id) != map.end()) return id;
-        return -1;
+    if (map.find(id) != map.end()) return id;
+    return -1;
 }
+template <typename T>
+T GetCorrectNumber2(T min)
+{
+    T x;
+    while ((cin >> x).fail() || x < min)
+    {
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cout << "Type number (0...): ";
+    }
+    return x;
+}
+
 
 void pipe_process(const Pipe& pipe)
 {
-    if (pipe.in_process)
+    if (pipe.getProc())
         cout << "Pipe is in process" << endl;
     else
         cout << "Pipe is not in process" << endl;
-}
-
-Pipe input_pipe()
-{
-    char variant;
-    Pipe pipe;
-    cout << "Enter information about the pipe, please" << endl;
-    cout << "Enter the name: ";
-    cin.ignore(10000, '\n');
-    getline(cin, pipe.name);
-    cout << "Enter the length: ";
-    pipe.length = GetCorrectNumber2(0.);
-    cout << "Enter the diameter: ";
-    pipe.diameter = GetCorrectNumber2(0.);
-    cout << "Enter 1 if the pipe is in process or 0 if the pipe is not in process" << endl;
-    do {
-        variant = _getch();
-        if (variant != '0' && variant != '1') cout << "Enter the correct value 1 or 0" << endl;
-    } while (variant != '0' && variant != '1');
-    pipe.in_process = variant == '1';
-    pipe_process(pipe);
-    return pipe;
-}
-
-Station input_station()
-{
-    Station station;
-    cout << "Enter information about the station, please " << endl;
-    cout << "Enter the name: ";
-    cin.ignore(10000, '\n');
-    getline(cin, station.name);
-    cout << "Enter the number of factories: ";
-    station.num = GetCorrectNumber2(0);
-    cout << "Enter the number of factories in process: ";
-    station.num_process = GetCorrectNumber1(0, station.num);
-    cout << "Enter the efficiency: ";
-    station.eff = GetCorrectNumber1(0, 100);
-    return station;
-}
-
-Pipe load_pipe(ifstream& fin)
-{
-    if (fin.is_open()) {
-        Pipe pipe;
-        string s;
-        fin >> pipe.id;
-        fin >> pipe.name;
-        fin >> pipe.length;
-        fin >> pipe.diameter;
-        fin >> pipe.in_process;
-        return pipe;
-    }
-    return {};
-}
-Station load_station(ifstream& fin)
-{
-    if (fin.is_open()) {
-        Station station;
-        fin >> station.id;
-        fin >> station.name;
-        fin >> station.num;
-        fin >> station.num_process;
-        fin >> station.eff;
-        return station;
-    }
-    return {};
 }
 
 void load_all(unordered_map <int, Pipe>& pipes, unordered_map <int, Station>& stations, ifstream& fin)
@@ -100,63 +58,49 @@ void load_all(unordered_map <int, Pipe>& pipes, unordered_map <int, Station>& st
     if (pipecount != 0) {
         for (int i = 0; i < pipecount; ++i) {
             Pipe mypipe;
-            int id;
-            fin >> id;
-            getline(fin, str);
-            getline(fin, str);
-            mypipe.name = str;
-            fin >> mypipe.length;
-            fin >> mypipe.diameter;
-            fin >> mypipe.in_process;
-            pipes.insert({ id, mypipe });
+            fin >> mypipe;
+            pipes.insert({ mypipe.getId(), mypipe });
         }
     }
     if (stationcount != 0) {
         for (int i = 0; i < stationcount; ++i) {
             Station mystation;
-            int id;
-            fin >> id;
-            getline(fin, str);
-            getline(fin, str);
-            mystation.name = str;
-            //fin >> mystation.name;
-            fin >> mystation.num;
-            fin >> mystation.num_process;
-            fin >> mystation.eff;
-            stations.insert({ id, mystation });
+            fin >> mystation;
+            stations.insert({ mystation.getId(), mystation });
         }
     }
 }
 
 
-void print_pipe(const pair <int, Pipe>& pipe)
-{
-    cout << "\tId: " << pipe.first
-        << "\tName: " << pipe.second.name
-        << "\tLength: " << pipe.second.length
-        << "\tDiameter: " << pipe.second.diameter << endl;
-    pipe_process(pipe.second);
-    cout << endl;
-}
-
-void print_station(const pair <int, Station>& station)
-{
-    cout << "\tId: " << station.first
-        << "\tName: " << station.second.name << endl
-        << "\tNumber of factories: " << station.second.num << endl
-        << "\tNumber of factories in process: " << station.second.num_process << endl
-        << "\tEfficiency: " << station.second.eff << endl;
-    cout << endl;
-}
+//void print_pipe(const pair <int, Pipe>& pipe)
+//{
+//    cout << "\tId: " << pipe.first
+//        << "\tName: " << pipe.second.name
+//        << "\tLength: " << pipe.second.length
+//        << "\tDiameter: " << pipe.second.diameter << endl;
+//    pipe_process(pipe.second);
+//    cout << endl;
+//}
+//
+//void print_station(const pair <int, Station>& station)
+//{
+//    cout << "\tId: " << station.first
+//        << "\tName: " << station.second.name << endl
+//        << "\tNumber of factories: " << station.second.num << endl
+//        << "\tNumber of factories in process: " << station.second.num_process << endl
+//        << "\tEfficiency: " << station.second.eff << endl;
+//    cout << endl;
+//}
 
 void print_pipes(const unordered_map <int, Pipe>& pipes)
 {
-    for (auto& p : pipes) print_pipe(p);
+    for (auto& [id,p] : pipes) cout << p;
 }
 
 void print_stations(const unordered_map <int, Station>& stations)
 {
-    for (auto& s : stations) print_station(s);
+    for (const auto& [id, s] : stations)
+        cout << s;
 }
 
 void print_menu()
@@ -175,10 +119,6 @@ void print_menu()
         << "0. Exit" << endl;
 }
 
-void edit_pipe(Pipe& pipe)
-{
-    pipe.in_process = !pipe.in_process;
-}
 int edit_pipes(unordered_map <int, Pipe>& pipes)
 {
     int id;
@@ -186,32 +126,11 @@ int edit_pipes(unordered_map <int, Pipe>& pipes)
     while (true) {
         int id = GetCorrectNumber2(0);
         if (SearchId(pipes, id) != -1) {
-            edit_pipe(pipes[id]);
+            pipes[id].edit();
             cout << "Object was edited" << endl;
             return id;
         }
         else cout << "Object with this id not found" << endl;
-    }
-}
-
-void edit_station(Station& station)
-{
-    int n;
-    char variant;
-    cout << "Enter 1 if factories were added to work or 0 if factories were excluded from work" << endl;
-    do {
-        variant = _getch();
-        if (variant != '0' && variant != '1') cout << "Enter the correct value" << endl;
-    } while (variant != '0' && variant != '1');
-    if (variant == '1') {
-        cout << "Enter how many factories were added to work " << endl;
-        n = GetCorrectNumber1(0, (station.num - station.num_process));
-        station.num_process = station.num_process + n;
-    }
-    else {
-        cout << "Enter how many factories were excluded from work " << endl;
-        n = GetCorrectNumber1(0, (station.num_process));
-        station.num_process = station.num_process - n;
     }
 }
 
@@ -222,7 +141,7 @@ int edit_stations(unordered_map <int, Station>& stations)
     while (true) {
         int id = GetCorrectNumber2(0);
         if (SearchId(stations, id) != -1) {
-            edit_station(stations[id]);
+            stations[id].edit();
             cout << "Object was edited" << endl;
             return id;
         }
@@ -253,46 +172,17 @@ void del(T& map)
     }
 }
 
-void save_pipe(const Pipe& pipe, ofstream& fout)
-{
-
-    if (fout.is_open()) {
-        fout << pipe.id << endl
-            << pipe.name << endl
-            << pipe.length << endl
-            << pipe.diameter << endl
-            << pipe.in_process << endl; }
-}
-
-void save_station(const Station& station, ofstream& fout)
-{
-    if (fout.is_open()) {
-        fout << station.id << endl
-            << station.name << endl
-            << station.num << endl
-            << station.num_process << endl
-            << station.eff << endl;
-    }
-}
 
 void save_pipes(const unordered_map <int, Pipe>& pipes, ofstream& fout)
 {
     for (auto& p : pipes)
-        fout << p.first << endl
-        << p.second.name << endl
-        << p.second.length << endl
-        << p.second.diameter << endl
-        << p.second.in_process << endl;
+        fout << p.second;
 }
 
 void save_stations(const unordered_map <int, Station>& stations, ofstream& fout)
 {
     for (auto& s : stations)
-        fout << s.first << endl
-        << s.second.name << endl
-        << s.second.num << endl
-        << s.second.num_process << endl
-        << s.second.eff << endl;;
+        fout << s.second;
 }
 
 template <typename T, typename T_param>
@@ -310,12 +200,12 @@ vector<int> search_filter(const unordered_map<int, T>& map, Filter<T, T_param> f
 template <typename T>
 bool search_by_name(const T& map, string name)
 {
-    return map.name == name;
+    return map.getName() == name;
 }
 
 bool search_by_repair(const Pipe& pipes, const bool& r)
 {
-    return pipes.in_process == r;
+    return pipes.getProc() == r;
 }
 
 vector<int> search_by_repair(const unordered_map <int, Pipe>& pipes, const bool& r)
@@ -323,7 +213,7 @@ vector<int> search_by_repair(const unordered_map <int, Pipe>& pipes, const bool&
     int i = 0;
     vector<int> index;
     for (auto& p : pipes) {
-        if (p.second.in_process == r)
+        if (p.second.getProc() == r)
             index.emplace_back(p.first);
     }
     return index;
@@ -331,7 +221,7 @@ vector<int> search_by_repair(const unordered_map <int, Pipe>& pipes, const bool&
 
 bool search_by_ratio(const Station& stations, double per)
 {
-    return (round(((double(stations.num) - double(stations.num_process)) / double(stations.num)) * 100) == per);
+    return (round(((double(stations.getNum()) - double(stations.getNumP())) / double(stations.getNum())) * 100) == per);
 }
 
 void pipes_filters(unordered_map<int, Pipe>& pipes) {
@@ -354,15 +244,15 @@ void pipes_filters(unordered_map<int, Pipe>& pipes) {
             if (index.size() != 0) {
                 cout << "Found " << index.size() << " pipes" << endl;
                 for (auto& id : index) {
-                    print_pipe({ id, pipes[id] });
+                    cout << pipes[id];
                 }
                 cout << "1. Edit found pipes" << endl
                     << "0. Exit" << endl;
                 switch (GetCorrectNumber1(0, 1)) {
                 case 1: {
                     for (auto& id : index) {
-                        edit_pipe(pipes[id]);
-                        print_pipe({ id, pipes[id] });
+                        pipes[id].edit();
+                        cout << pipes[id];
                     }
                 }
                 case 0:
@@ -389,15 +279,15 @@ void pipes_filters(unordered_map<int, Pipe>& pipes) {
                 if (index.size() != 0) {
                     cout << "Found " << index.size() << " pipes" << endl;
                     for (auto& id : index) {
-                        print_pipe({ id,pipes[id] });
+                        cout << pipes[id];
                     }
                     cout << "1. Edit found pipes" << endl 
                         << "0. Exit" << endl;
                     switch (GetCorrectNumber1(0, 1)) {
                     case 1: {
                         for (auto& id : index) {
-                            edit_pipe(pipes[id]);
-                            print_pipe({ id, pipes[id] });
+                            pipes[id].edit();
+                            cout << pipes[id];
                         }
                     }
                     case 0:
@@ -425,15 +315,15 @@ void pipes_filters(unordered_map<int, Pipe>& pipes) {
             if (edit_id.size() != 0) {
                 cout << "Found " << edit_id.size() << " pipes" << endl;
                 for (auto& id : edit_id) {
-                    print_pipe({ id,pipes[id] });
+                    cout << pipes[id] << endl;
                 }
                 cout << "1. Edit found pipes" << endl
                     << "0. Exit" << endl;
                 switch (GetCorrectNumber1(0, 1)) {
                 case 1: {
                     for (auto& id : edit_id) {
-                        edit_pipe(pipes[id]);
-                        print_pipe({ id, pipes[id] });
+                        pipes[id].edit();
+                        cout << pipes[id] << endl;
                     }
                 }
                 case 0:
@@ -463,8 +353,9 @@ void stations_filters(unordered_map<int, Station>& stations) {
         cout << endl << "EDITING STATIONS" << endl 
             << "1. Search for stations by name" << endl
             << "2. Search for stations by ratio" << endl 
+            << "3. Search for stations by id" << endl
             << "0. Exit" << endl;
-        switch (GetCorrectNumber1(0, 2)) {
+        switch (GetCorrectNumber1(0, 3)) {
         case 1: {
             cout << "Type name of station: ";
             string name = "";
@@ -474,15 +365,15 @@ void stations_filters(unordered_map<int, Station>& stations) {
             if (index.size() != 0) {
                 cout << "Found " << index.size() << " stations" << endl;
                 for (auto& id : index) {
-                    print_station({ id, stations[id] });
+                    cout << stations[id];
                 }
                 cout << "1. Edit found stations" << endl
                     << "0. Exit" << endl;
                 switch (GetCorrectNumber1(0, 1)) {
                 case 1: {
                     for (auto& id : index) {
-                        edit_station(stations[id]);
-                        print_station({ id, stations[id] });
+                        stations[id].edit();
+                        cout << stations[id] << endl;
                     }
                 }
                 case 0:
@@ -504,17 +395,51 @@ void stations_filters(unordered_map<int, Station>& stations) {
                 if (index.size() != 0) {
                     cout << "Found " << index.size() << " stations" << endl;
                     for (auto& id : index) {
-                        print_station({ id, stations[id] });
+                        cout << stations[id];
                     }
                     cout << "1. Edit found stations" << endl
                         << "0. Exit" << endl;
                     switch (GetCorrectNumber1(0, 1)) {
                     case 1: {
                         for (auto& id : index) {
-                            edit_station(stations[id]);
-                            print_station({ id, stations[id] });
+                            stations[id].edit();
+                            cout << stations[id];
                         }
                     }
+        case 3: {
+            cout << "Enter id of stations you want to edit or 0 to complete the entry: " << endl;
+            int variant;
+            vector<int> edit_id;
+            do {
+                variant = GetCorrectNumber2(0);
+                if (SearchId(stations, variant) != -1)
+                    edit_id.emplace_back(variant);
+            } while (variant != 0);
+            if (edit_id.size() != 0) {
+                cout << "Found " << edit_id.size() << " stations" << endl;
+                for (auto& id : edit_id) {
+                    cout << stations[id] << endl;
+                    stations[id].edit();
+                    cout << "1. Edit found pipes" << endl
+                        << "0. Exit" << endl;
+                    switch (GetCorrectNumber1(0, 1)) {
+                    case 1: {
+                        for (auto& id : edit_id) {
+                            stations[id].edit();
+                            cout << stations[id] << endl;
+                        }
+                    }
+                    case 0:
+                        return;
+                    default:
+                        cout << "Wrong action" << endl;
+                        break;
+                    }
+                }
+            }
+            else cout << "No stations with this id" << endl;
+            break;
+        }
                     case 0:
                         return;
                     default:
@@ -568,8 +493,6 @@ int main()
 {
     unordered_map<int, Pipe> pipes;
     unordered_map<int, Station> stations;
-    int stationcount = 1;
-    int pipecount = 1;
     while (1)
     {
         print_menu();
@@ -577,14 +500,16 @@ int main()
         {
         case 1:
         {           
-        int id = pipes.size() + 1;
-        pipes.insert({ id, input_pipe() });
+            Pipe pipe;
+            cin >> pipe;
+            pipes.insert({ pipe.getId(),pipe });
         break;
         }
         case 2:
         {   
-        int id = stations.size() + 1;
-        stations.insert({ id, input_station() });
+            Station station;
+            cin >> station;
+            stations.insert({ station.getId(),station });
             break;
         }
         case 3:
@@ -592,7 +517,7 @@ int main()
             cout << "Pipes to edit not found" << endl;
         else {
             int id = edit_pipes(pipes);
-            print_pipes({ id, pipes[id] });
+            cout << pipes[id];
         }
         break;
         }
@@ -604,7 +529,7 @@ int main()
         else
         {
             int id = edit_stations(stations);
-            print_station({ id, stations[id] });
+            cout << stations[id];
         }
         break;
         }

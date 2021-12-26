@@ -158,12 +158,12 @@ void print_menu()
         << "2. Add station" << endl
         << "3. Edit pipe" << endl
         << "4. Edit station" << endl
-        << "5. Show " << endl
-        << "6. Save" << endl
-        << "7. Load " << endl
-        << "8. Delete pipe " << endl
-        << "9. Delete station " << endl
-        << "10. Pipe search by name " << endl 
+        << "5. Delete pipe " << endl
+        << "6. Delete station " << endl
+        << "7. Search by the filter " << endl
+        << "8. Show " << endl
+        << "9. Save" << endl
+        << "10. Load " << endl
         << "0. Exit" << endl;
 }
 
@@ -226,22 +226,17 @@ void save_pipe(const Pipe& pipe, ofstream& fout)
         fout << pipe.id << endl
             << pipe.length << endl
             << pipe.diameter << endl
-            << pipe.in_process << endl;
-        // if (pipe.in_process == true) fout << "Processed";
-       //  else fout << "Not processed";
-    }
+            << pipe.in_process << endl; }
 }
 
 void save_station(const Station& station, ofstream& fout)
 {
-
     if (fout.is_open()) {
         fout << station.id << endl
             << station.name << endl
             << station.num << endl
             << station.num_process << endl
             << station.eff << endl;
-
     }
 }
 
@@ -280,6 +275,7 @@ int search_by_name(const vector<T>& t, string name)
     }
     return -1;
 }
+
 template <typename T>
 int search_by_id(const vector<T>& t, int name_id)
 {
@@ -333,118 +329,45 @@ int main()
         break;
         }
         case 2:
-        {
-            Station station;
+        {   Station station;
             stations.emplace_back(input_station(stations.size() + 1));
             break;
         }
 
         case 3:
-        {   if (pipes.size() == 0) {
+        {   if (pipes.size() == 0) 
             cout << "No pipe to edit" << endl;
-        }
-        else {
+        else 
             edit_pipe(SelectPipe(pipes));
-        }
         break;
         }
 
         case 4:
         {   if (stations.size() == 0) {
-            cout << "No station to edit" << endl;
-        }
-        else {
+            cout << "No station to edit" << endl;}
+        else 
             edit_station(SelectStation(stations));
-        }
         break;
         }
-
         case 5:
         { 
-            cout << "Information about pipes:" << endl;
-            if (pipes.size() == 0) {
-                cout << "No pipes" << endl;
-            }
-            else
-                print_pipes(pipes);
-            cout << "Information about stations:" << endl;
-            if (stations.size() == 0) {
-                cout << "No stations" << endl;
-            }
-            else
-                print_stations(stations);
-            break;
-        }
-        case 6:
-        {   
-            string name = "";
-            cout << "Name of file : ";
-            cin.ignore(10000, '\n');
-            getline(cin, name);
-            name += ".txt";
-            ofstream fout;
-            fout.open(name, ios::out);
-            if (pipes.size() != 0)
-                fout << pipes.size() << endl;
-            else fout << 0 << endl;
-            if (stations.size() != 0)
-                fout << stations.size() << endl;
-            else fout << 0 << endl;
-            if (pipes.size() != 0)
-                save_pipes(pipes, fout);
-            if (stations.size() != 0)
-                save_stations(stations, fout);
-            fout.close();
-        break;
-        }
-        case 7:
-        {
-            string name = "";
-            cout << "Name of file : ";
-            cin.ignore(10000, '\n');
-            getline(cin, name);
-            name += ".txt";
-            ifstream fin;
-            fin.open(name, ios::in);
-            if (fin.fail()) 
-                cout << "File is not exist" << endl; 
-            else {
-                cout << "File is exist" << endl;
-                load_all(pipes, stations, fin);
-                cout << "Information about pipes:" << endl;
-                if (pipes.size() == 0) 
-                    cout << "No pipes" << endl;
-                else
-                    print_pipes(pipes);
-                cout << "Information about stations:" << endl;
-                if (stations.size() == 0) 
-                    cout << "No stations" << endl;
-                else
-                    print_stations(stations);
-            }
-            break;
-        }
-        case 8:
-        {
             if (pipes.size() == 0)
                 cout << "Pipes to delete not found" << endl;
             else {
                 print_pipes(pipes);
-                del(pipes);
-            }
+                del(pipes);}
             break;
         }
-        case 9:
-        {
-            if (stations.size() == 0)
-                cout << "Stations to delete not found" << endl;
-            else {
-                print_stations(stations);
-                del(stations);
-            }
-            break;
+        case 6:
+        {   
+              if (stations.size() == 0)
+            cout << "Stations to delete not found" << endl;
+              else {
+            print_stations(stations);
+            del(stations); }
+        break;
         }
-        case 10:
+        case 7:
         {
             string name = "";
             cout << "Type name of station: ";
@@ -453,8 +376,7 @@ int main()
             int i = search_by_name(stations, name);
             if (i != -1) {
                 cout << "Station with this name: " << endl;
-                print_station(stations[i]);
-            }
+                print_station(stations[i]);  }
             else
                 cout << "Station with this name not found" << endl;
 
@@ -469,13 +391,13 @@ int main()
             (variant == '1') ? cout << "Pipes is in process: " << endl : cout << "Pipes is not in process: " << endl;
             vector<int> index = search_by_repair(pipes, (variant == '1') ? true : false);
             if (index.size() != 0) {
-                for (auto& p : index) 
+                for (auto& p : index)
                     print_pipe(pipes[p]);
             }
             else cout << "Pipes not found" << endl;
 
             cout << "Type id of pipe: ";
-            int name_id = GetCorrectNumber1(0, 100);
+            int name_id = GetCorrectNumber1(0, 1000);
             int ii = search_by_id(pipes, name_id);
             if (ii != -1) {
                 cout << endl;
@@ -495,6 +417,69 @@ int main()
                 }
             }
             else cout << "Station with this ratio not found" << endl;
+            break;
+        }
+        case 8:
+        {
+            cout << "Information about pipes:" << endl;
+            if (pipes.size() == 0) {
+                cout << "No pipes" << endl; }
+            else
+                print_pipes(pipes);
+            cout << "Information about stations:" << endl;
+            if (stations.size() == 0)
+                cout << "No stations" << endl;
+            else
+                print_stations(stations);
+            break;
+        }
+        case 9:
+        {
+            string name = "";
+            cout << "Name of file: ";
+            cin.ignore(10000, '\n');
+            getline(cin, name);
+            name += ".txt";
+            ofstream fout;
+            fout.open(name, ios::out);
+            if (pipes.size() != 0)
+                fout << pipes.size() << endl;
+            else fout << 0 << endl;
+            if (stations.size() != 0)
+                fout << stations.size() << endl;
+            else fout << 0 << endl;
+            if (pipes.size() != 0)
+                save_pipes(pipes, fout);
+            if (stations.size() != 0)
+                save_stations(stations, fout);
+            fout.close();
+            break;
+        }
+        case 10:
+        {
+            string name = "";
+            cout << "Name of file : ";
+            cin.ignore(10000, '\n');
+            getline(cin, name);
+            name += ".txt";
+            ifstream fin;
+            fin.open(name, ios::in);
+            if (fin.fail())
+                cout << "File is not exist" << endl;
+            else {
+                cout << "File is exist" << endl;
+                load_all(pipes, stations, fin);
+                cout << "Information about pipes:" << endl;
+                if (pipes.size() == 0)
+                    cout << "No pipes" << endl;
+                else
+                    print_pipes(pipes);
+                cout << "Information about stations:" << endl;
+                if (stations.size() == 0)
+                    cout << "No stations" << endl;
+                else
+                    print_stations(stations);
+            }
             break;
         }
         case 0:

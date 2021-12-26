@@ -115,7 +115,6 @@ Station load_station(ifstream& fin)
     return {};
 }
 
-
 void load_all(unordered_map <int, Pipe>& pipes, unordered_map <int, Station>& stations, ifstream& fin)
 {
     string str;
@@ -320,36 +319,6 @@ void save_stations(const unordered_map <int, Station>& stations, ofstream& fout)
         << s.second.eff << endl;;
 }
 
-//template <typename T>
-//T& select(const T& map)
-//{
-//    cout << endl << "Type id: ";
-//    while (true) {
-//        int id = GetCorrectNumber2(0);
-//        if (SearchId(map, id) != -1) {
-//
-//            return (map, id);
-//        }
-//        else cout << "No object with this id" << endl;
-//    }
-//}
-
-
-//
-//Pipe& SelectPipe(const unordered_map <int, Pipe>& p)
-//{
-//    cout << "Enter index: " << endl;
-//    unsigned int index = GetCorrectNumber1<uint64_t>(1, p.size());
-//    return { index, p[index-1] };
-// }
-
-//Station& SelectStation(const unordered_map <int, Station>& s)
-//{
-//    cout << "Enter index: " << endl;
-//    unsigned int index = GetCorrectNumber1<uint64_t>(1, s.size());
-//    return s[index - 1];
-//}
-
 template <typename T, typename T_param>
 using Filter = bool (*)(const T& map, T_param param);
 
@@ -368,12 +337,10 @@ bool search_by_name(const T& map, string name)
     return map.name == name;
 }
 
-
 bool search_by_repair(const Pipe& pipes, const bool& r)
 {
     return pipes.in_process == r;
 }
-
 
 vector<int> search_by_repair(const unordered_map <int, Pipe>& pipes, const bool& r)
 {
@@ -390,19 +357,6 @@ bool search_by_ratio(const Station& stations, double per)
 {
     return (round(((double(stations.num) - double(stations.num_process)) / double(stations.num)) * 100) == per);
 }
-
-
-//template <typename T>
-//int search_by_id(const unordered_map <int, T>& t, int name_id)
-//{
-//    int i = 0;
-//    for (auto& p : t) {
-//        if (p.id == name_id)
-//            return i;
-//        ++i;
-//    }
-//    return -1;
-//}
 
 void pipes_filters(unordered_map<int, Pipe>& pipes) {
     if (pipes.size() == 0) {
@@ -534,10 +488,9 @@ void stations_filters(unordered_map<int, Station>& stations) {
             << "1. Search for stations by name" << endl
             << "2. Search for stations by ratio" << endl 
             << "0. Exit" << endl;
-        int FilterCase = GetCorrectNumber2(0);
-        switch (FilterCase) {
+        switch (GetCorrectNumber1(0, 2)) {
         case 1: {
-            cout << "Type name of station: " << endl;
+            cout << "Type name of station: ";
             string name = "";
             cin.ignore(10000, '\n');
             getline(cin, name);
@@ -546,8 +499,21 @@ void stations_filters(unordered_map<int, Station>& stations) {
                 cout << "Found " << index.size() << " stations" << endl;
                 for (auto& id : index) {
                     print_station({ id, stations[id] });
-                    edit_station(stations[id]);
-                    print_station({ id, stations[id] });
+                }
+                cout << "1. Edit found stations" << endl
+                    << "0. Exit" << endl;
+                switch (GetCorrectNumber1(0, 1)) {
+                case 1: {
+                    for (auto& id : index) {
+                        edit_station(stations[id]);
+                        print_station({ id, stations[id] });
+                    }
+                }
+                case 0:
+                    return;
+                default:
+                    cout << "Wrong action" << endl;
+                    break;
                 }
             }
             else
@@ -563,8 +529,21 @@ void stations_filters(unordered_map<int, Station>& stations) {
                     cout << "Found " << index.size() << " stations" << endl;
                     for (auto& id : index) {
                         print_station({ id, stations[id] });
-                        edit_station(stations[id]);
-                        print_station({ id, stations[id] });
+                    }
+                    cout << "1. Edit found stations" << endl
+                        << "0. Exit" << endl;
+                    switch (GetCorrectNumber1(0, 1)) {
+                    case 1: {
+                        for (auto& id : index) {
+                            edit_station(stations[id]);
+                            print_station({ id, stations[id] });
+                        }
+                    }
+                    case 0:
+                        return;
+                    default:
+                        cout << "Wrong action" << endl;
+                        break;
                     }
                 }
                 else

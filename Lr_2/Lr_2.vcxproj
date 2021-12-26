@@ -144,6 +144,7 @@
     <ClCompile Include="station.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CorrectNumber.h" />
     <ClInclude Include="Header.h" />
     <ClInclude Include="pipe.h" />
     <ClInclude Include="station.h" />

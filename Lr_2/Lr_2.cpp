@@ -6,35 +6,9 @@
 #include <unordered_map>
 #include "pipe.h"
 #include "station.h"
+#include "CorrectNumber.h"
 
 using namespace std;
-template <typename T>
-
-T GetCorrectNumber1(T min, T max)
-{
-    T x;
-    while ((cin >> x).fail() || x < min || x > max)
-    {
-        cin.clear();
-        cin.ignore(10000, '\n');
-        cout << "Type number (" << min << "-" << max << "): ";
-    }
-    return x;
-}
-
-template <typename T>
-T GetCorrectNumber2(T min)
-{
-    T x;
-    while (!(cin >> x) && x < min)
-    {
-        cin.clear();
-        cin.ignore(10000, '\n');
-        cout << "Type correct number: ";
-    }
-    cin.ignore(10000, '\n');
-    return x;
-}
 
 template <typename T>
 int SearchId(const T& map, int id)
@@ -205,7 +179,7 @@ void edit_pipe(Pipe& pipe)
 {
     pipe.in_process = !pipe.in_process;
 }
-void edit_pipes(unordered_map <int, Pipe>& pipes)
+int edit_pipes(unordered_map <int, Pipe>& pipes)
 {
     int id;
     cout << endl << "Type id: ";
@@ -214,7 +188,7 @@ void edit_pipes(unordered_map <int, Pipe>& pipes)
         if (SearchId(pipes, id) != -1) {
             edit_pipe(pipes[id]);
             cout << "Object was edited" << endl;
-            return;
+            return id;
         }
         else cout << "Object with this id not found" << endl;
     }
@@ -241,7 +215,7 @@ void edit_station(Station& station)
     }
 }
 
-void edit_stations(unordered_map <int, Station>& stations)
+int edit_stations(unordered_map <int, Station>& stations)
 {
     int id;
     cout << endl << "Type id: ";
@@ -250,7 +224,7 @@ void edit_stations(unordered_map <int, Station>& stations)
         if (SearchId(stations, id) != -1) {
             edit_station(stations[id]);
             cout << "Object was edited" << endl;
-            return;
+            return id;
         }
         else cout << "Object with this id not found" << endl;
     }
@@ -617,8 +591,8 @@ int main()
         {   if (pipes.size() == 0)
             cout << "Pipes to edit not found" << endl;
         else {
-            edit_pipes(pipes);
-            print_pipes(pipes);
+            int id = edit_pipes(pipes);
+            print_pipes({ id, pipes[id] });
         }
         break;
         }
@@ -629,8 +603,8 @@ int main()
         }
         else
         {
-            edit_stations(stations);
-            print_stations(stations);
+            int id = edit_stations(stations);
+            print_station({ id, stations[id] });
         }
         break;
         }

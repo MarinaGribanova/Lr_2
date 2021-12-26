@@ -35,5 +35,8 @@
     <ClInclude Include="station.h">
       <Filter>Файлы ресурсов\Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="CorrectNumber.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

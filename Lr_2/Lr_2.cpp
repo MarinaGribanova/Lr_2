@@ -657,6 +657,8 @@ int main()
         {   if (pipes.size() == 0)
             cout << "No pipe to edit" << endl;
         else {
+            cout << "Information about pipes:" << endl;
+            print_pipes(pipes);
             int id = edit_pipes(pipes);
             print_pipe({ id, pipes[id] });
         }
@@ -667,6 +669,8 @@ int main()
             cout << "No station to edit" << endl;
         }
         else {
+            cout << "Information about stations:" << endl;
+            print_stations(stations);
             int id = edit_stations(stations);
             print_station({ id, stations[id] });
         }
@@ -688,7 +692,7 @@ int main()
         case 6:
         {
             if (stations.size() == 0)
-                cout << "No stations to delete" << endl;
+                cout << "Stations to delete not found" << endl;
             else {
                 print_stations(stations);
                 del(stations);
@@ -727,9 +731,10 @@ int main()
             name = name + ".txt";
             ofstream fout;
             fout.open(name, ios::out);
-            if (!fout.is_open())
-                cout << "Unable to open file" << endl;
+            if (fout.fail())
+                cout << "File is not exist" << endl;
             else {
+                cout << "Successfully saved" << endl;
                 if (pipes.size() != 0)
                     fout << pipes.size() << endl;
                 else fout << 0 << endl;

@@ -52,54 +52,34 @@ void pipe_process(const Pipe& pipe)
 void load_all(unordered_map <int, Pipe>& pipes, unordered_map <int, Station>& stations, ifstream& fin)
 {
     string str;
-    int pipecount, stationcount;
+    int pipecount, stationcount, MaxPipeId, MaxStationId;
     fin >> pipecount;
+    fin >> MaxPipeId;
     fin >> stationcount;
-    if (pipecount != 0) {
+    fin >> MaxStationId;
         for (int i = 0; i < pipecount; ++i) {
             Pipe mypipe;
             fin >> mypipe;
             pipes.insert({ mypipe.getId(), mypipe });
         }
-    }
-    if (stationcount != 0) {
         for (int i = 0; i < stationcount; ++i) {
             Station mystation;
             fin >> mystation;
             stations.insert({ mystation.getId(), mystation });
         }
-    }
+        Pipe::setMaxID(MaxPipeId);
+        Station::setMaxID(MaxStationId);
 }
-
-
-//void print_pipe(const pair <int, Pipe>& pipe)
-//{
-//    cout << "\tId: " << pipe.first
-//        << "\tName: " << pipe.second.name
-//        << "\tLength: " << pipe.second.length
-//        << "\tDiameter: " << pipe.second.diameter << endl;
-//    pipe_process(pipe.second);
-//    cout << endl;
-//}
-//
-//void print_station(const pair <int, Station>& station)
-//{
-//    cout << "\tId: " << station.first
-//        << "\tName: " << station.second.name << endl
-//        << "\tNumber of factories: " << station.second.num << endl
-//        << "\tNumber of factories in process: " << station.second.num_process << endl
-//        << "\tEfficiency: " << station.second.eff << endl;
-//    cout << endl;
-//}
 
 void print_pipes(const unordered_map <int, Pipe>& pipes)
 {
-    for (auto& [id,p] : pipes) cout << p;
+    for (auto& [id, p] : pipes)
+        cout << p;
 }
 
 void print_stations(const unordered_map <int, Station>& stations)
 {
-    for (const auto& [id, s] : stations)
+    for (const auto& [id,s] : stations)
         cout << s;
 }
 

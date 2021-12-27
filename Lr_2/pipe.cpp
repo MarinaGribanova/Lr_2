@@ -4,8 +4,8 @@
 #include <iostream>
 #include <conio.h>
 using namespace std;
-
 int Pipe::MaxID = 0;
+
 void pipe_processs(const Pipe& pipe)
 {
     if (pipe.getProc())
@@ -17,17 +17,28 @@ void pipe_processs(const Pipe& pipe)
 Pipe::Pipe()
 {
     id = ++MaxID;
+    name = "";
+    length = 0;
+    diameter = 0;
+    in_process = 0;
 }
 
-ostream& operator<<(ostream& out, const Pipe& p)
+void Pipe::edit()
 {
-	out << "\tName: " << p.name
-		<< "\tLength: " << p.length
-		<< "\tDiameter: " << p.diameter << endl;
-	return out;
+    in_process = !in_process;
 }
 
-ofstream& operator<<(ofstream& fout, const Pipe& p)
+ostream& operator << (ostream& out, const Pipe& p)
+{
+    out << "\tId: " << p.id
+        << "\tName: " << p.name
+        << "\tLength: " << p.length
+        << "\tDiameter: " << p.diameter << endl;
+    pipe_processs(p);
+    return out;
+}
+
+std::ofstream& operator<<(std::ofstream& fout, const Pipe& p)
 {
     if (fout.is_open()) {
         fout << p.id << endl
@@ -39,12 +50,13 @@ ofstream& operator<<(ofstream& fout, const Pipe& p)
     return fout;
 }
 
-istream& operator>>(istream& in, Pipe& p)
+istream& operator >> (istream& in, Pipe& p)
 {
     char variant;
     cout << "Please, enter the information about pipe " << endl;
     cout << "Enter the name: ";
-    in >> p.name;
+    cin.ignore(10000, '\n');
+    getline(in, p.name);
     cout << "Enter the length: ";
     p.length = GetCorrectNumber2(0.);
     cout << "Enter the diameter: ";
@@ -59,7 +71,7 @@ istream& operator>>(istream& in, Pipe& p)
     return in;
 }
 
-ifstream& operator>>(ifstream& fin, Pipe& p)
+std::ifstream& operator>>(std::ifstream& fin, Pipe& p)
 {
     string str;
     if (fin.is_open()) {
@@ -73,9 +85,4 @@ ifstream& operator>>(ifstream& fin, Pipe& p)
         fin >> p.in_process;
     }
     return fin;
-}
-
-void pipe::edit()
-{
-    in_process = !in_process;
 }

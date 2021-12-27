@@ -1,19 +1,23 @@
-#include "station.h"
+
+#include "Station.h"
 #include "CorrectNumber.h"
 #include <string>
 #include <iostream>
-#include <conio.h>
-using namespace std;
 
+using namespace std;
 int Station::MaxID = 0;
 
 Station::Station()
 {
     id = ++MaxID;
+    name = "";
+    num = 0;
+    num_process = 0;
+    eff = 0;
 }
-
 ostream& operator << (ostream& out, const Station& s)
 {
+
     out << "\tId: " << s.id << endl
         << "\tName: " << s.name << endl
         << "\tNumber of factories: " << s.num << endl
@@ -22,7 +26,7 @@ ostream& operator << (ostream& out, const Station& s)
     return out;
 }
 
-ofstream& operator<<(ofstream& fout, const Station& s)
+std::ofstream& operator<<(ofstream& fout, const Station& s)
 {
     if (fout.is_open()) {
         fout << s.id << endl
@@ -34,7 +38,7 @@ ofstream& operator<<(ofstream& fout, const Station& s)
     return fout;
 }
 
-istream& operator>>(istream& in, Station& s)
+istream& operator >> (istream& in, Station& s)
 {
     cout << "Please, enter the information about station " << endl;
     cout << "Enter the name: ";
@@ -48,23 +52,7 @@ istream& operator>>(istream& in, Station& s)
     s.eff = GetCorrectNumber1(0, 100);
     return in;
 }
-
-ifstream& operator>>(ifstream& fin, Station& s)
-{
-    string str;
-    if (fin.is_open()) {
-        fin >> s.id;
-        getline(fin, str);
-        getline(fin, str);
-        s.name = str;
-        fin >> s.num;
-        fin >> s.num_process;
-        fin >> s.eff;
-    }
-    return fin;
-}
-
-void station::edit()
+void Station::edit()
 {
     int n;
     char variant;
@@ -75,12 +63,25 @@ void station::edit()
     } while (variant != '0' && variant != '1');
     if (variant == '1') {
         cout << "Enter how many factories were added to work " << endl;
-        n = GetCorrectNumber1(0, (station.num - station.num_process));
-        station.num_process = station.num_process + n;
+        n = GetCorrectNumber1(0, (num - num_process));
+        num_process += n;
     }
     else {
         cout << "Enter how many factories were excluded from work " << endl;
-        n = GetCorrectNumber1(0, (station.num_process));
-        station.num_process = station.num_process - n;
+        n = GetCorrectNumber1(0, num_process);
+        num_process -= n;
     }
 }
+std::ifstream& operator>>(std::ifstream& fin, Station& s)
+{
+    if (fin.is_open()) {
+        fin >> s.id;
+        fin >> ws;
+        getline(fin, s.name);
+        fin >> s.num;
+        fin >> s.num_process;
+        fin >> s.eff;
+    }
+    return fin;
+}
+
